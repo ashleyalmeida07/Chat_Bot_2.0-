@@ -6,12 +6,12 @@ from openai import OpenAI
 
 # Load environment variables
 load_dotenv()
-token = os.getenv("GITHUB_TOKEN")
+token = os.getenv("TOKEN")
 
 if not token:
-    raise ValueError("GITHUB_TOKEN not found in environment variables.")
+    raise ValueError("TOKEN not found in environment variables.")
 
-endpoint = "https://models.inference.ai.azure.com"
+endpoint = "Azure endpoint"
 model_name = "gpt-4o-mini"
 
 # Initialize OpenAI client
@@ -19,7 +19,7 @@ client = OpenAI(base_url=endpoint, api_key=token)
 
 def get_image_data_url(image_file: str, image_format: str) -> str:
     """Converts an image file to a data URL string."""
-    with open(image_file, "rb") as f:
+    with open(image_file, "rb") :
         image_data = base64.b64encode(f.read()).decode("utf-8")
     return f"data:image/{image_format};base64,{image_data}"
 
@@ -62,7 +62,7 @@ def chat():
             top_p=1.0
         )
         bot_reply = response.choices[0].message.content
-    except Exception as e:
+    except Exception :
         bot_reply = f"Error: {str(e)}"
     
     return jsonify({"reply": bot_reply})
