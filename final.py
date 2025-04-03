@@ -11,7 +11,7 @@ token = os.getenv("TOKEN")
 if not token:
     raise ValueError("TOKEN not found in environment variables.")
 
-endpoint = "Azure endpoint"
+endpoint = "https://models.inference.ai.azure.com"
 model_name = "gpt-4o-mini"
 
 # Initialize OpenAI client
