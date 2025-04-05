@@ -19,7 +19,7 @@ client = OpenAI(base_url=endpoint, api_key=token)
 
 def get_image_data_url(image_file: str, image_format: str) -> str:
     """Converts an image file to a data URL string."""
-    with open(image_file, "rb") :
+    with open(image_file, "rb") as f:
         image_data = base64.b64encode(f.read()).decode("utf-8")
     return f"data:image/{image_format};base64,{image_data}"
 
@@ -62,11 +62,11 @@ def chat():
             top_p=1.0
         )
         bot_reply = response.choices[0].message.content
-    except Exception :
+    except Exception as e:
         bot_reply = f"Error: {str(e)}"
     
     return jsonify({"reply": bot_reply})
 
 if __name__ == "__main__":
     os.makedirs("uploads", exist_ok=True)
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(debug=True)
