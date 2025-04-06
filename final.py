@@ -5,10 +5,10 @@ from openai import OpenAI
 
 # Load environment variables
 load_dotenv()
-token = os.getenv("GITHUB_TOKEN")
+token = os.getenv("TOKEN")
 
 if not token:
-    raise ValueError("GITHUB_TOKEN not found in environment variables.")
+    raise ValueError("TOKEN not found in environment variables.")
 
 # OpenAI or Azure endpoint and model
 endpoint = "https://models.inference.ai.azure.com"
