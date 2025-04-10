@@ -2,19 +2,19 @@ import os
 import base64
 from flask import Flask, request, render_template, jsonify
 from dotenv import load_dotenv
-import openai
+from openai import OpenAI
 
 app = Flask(__name__)
 os.makedirs("uploads", exist_ok=True)
 
 # Load environment variables
 load_dotenv()
-openai.api_key = os.getenv("TOKEN")
-openai.api_base = "https://models.inference.ai.azure.com"  # Azure OpenAI endpoint
-openai.api_type = "azure"
-openai.api_version = "2024-02-15-preview"  # Update to your correct API version
+token = os.getenv("GITHUB_TOKEN")
+endpoint = "https://models.inference.ai.azure.com"
+model_name = "gpt-4o-mini"
 
-model_name = "gpt-4o-mini"  # This must be the deployment name from Azure
+# Initialize Azure OpenAI client
+client = OpenAI(base_url=endpoint, api_key=token)
 
 def get_image_data_url(image_path: str, image_format: str = "jpg") -> str:
     """Convert image file to base64 data URL with a specified format."""
@@ -24,7 +24,7 @@ def get_image_data_url(image_path: str, image_format: str = "jpg") -> str:
 
 @app.route('/')
 def index():
-    return render_template('final.html')  # Your HTML form should support image and message upload
+    return render_template('final.html')  # Make sure your form supports image and message input
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -51,14 +51,14 @@ def chat():
         return jsonify({"reply": "Please provide a message or an image."})
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             messages=conversation,
-            model=model_name,  # Must match your Azure deployment name
+            model=model_name,
             temperature=1.0,
             max_tokens=1000,
             top_p=1.0
         )
-        bot_reply = response['choices'][0]['message']['content']
+        bot_reply = response.choices[0].message.content
     except Exception as e:
         bot_reply = f"Error: {str(e)}"
 
