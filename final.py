@@ -9,7 +9,7 @@ os.makedirs("uploads", exist_ok=True)
 
 # Load environment variables
 load_dotenv()
-token = os.getenv("GITHUB_TOKEN")
+token = os.getenv("TOKEN")
 endpoint = "https://models.inference.ai.azure.com"
 model_name = "gpt-4o-mini"
 
