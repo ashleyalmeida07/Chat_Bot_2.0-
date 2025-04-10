@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumos AI Chat</title>
+    <title>Chatbot with Image</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
     <style>
         :root {
             /* Light theme variables */
@@ -37,6 +38,14 @@
             --scrollbar-track: #f1f1f1;
             --file-badge-bg: #f3f4f6;
             --file-badge-color: #4b5563;
+            --code-bg: #f5f5f5;
+            --code-color: #2d2d2d;
+            --code-block-bg: #f5f5f5;
+            --code-block-border: #dcdcdc;
+            --copy-button-bg: rgba(0, 0, 0, 0.05);
+            --copy-button-color: #4b5563;
+            --copy-button-hover: rgba(0, 0, 0, 0.1);
+            
         }
 
         .dark-theme {
@@ -70,6 +79,13 @@
             --scrollbar-track: #1e293b;
             --file-badge-bg: #334155;
             --file-badge-color: #cbd5e1;
+            --code-bg: #1a1d23;
+            --code-color: #abb2bf;
+            --code-block-bg: #1a1d23;
+            --code-block-border: #2c313a;
+            --copy-button-bg: rgba(255, 255, 255, 0.1);
+            --copy-button-color: #abb2bf;
+            --copy-button-hover: rgba(255, 255, 255, 0.2);
         }
 
         * {
@@ -491,6 +507,83 @@
             display: none;
         }
 
+        /* Code block styling - Enhanced for better visibility */
+        .code-block-container {
+            position: relative;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background-color: var(--code-block-bg);
+            border: 1px solid var(--code-block-border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .code-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--code-color);
+            font-size: 0.875rem;
+            font-family: monospace;
+        }
+
+        .code-block-language {
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #61afef;
+        }
+
+        .copy-button {
+            background: var(--copy-button-bg);
+            border: none;
+            color: var(--copy-button-color);
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .copy-button:hover {
+            background-color: var(--copy-button-hover);
+        }
+
+        .copy-button svg {
+            width: 0.875rem;
+            height: 0.875rem;
+        }
+
+        .code-block {
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            line-height: 1.5;
+            font-size: 0.875rem;
+        }
+
+        .code-block code {
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+        }
+
+        .code-block::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .code-block::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .code-block::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
         /* Animations */
         @keyframes fadeIn {
             from {
@@ -575,7 +668,7 @@
                 <div class="chat-logo">L</div>
                 <div class="chat-title">
                     <h1>Lumos AI</h1>
-                    <span>Intelligent Conversations</span>
+                    <span>Ask me anything</span>
                 </div>
             </div>
             <div class="chat-actions">
@@ -592,10 +685,27 @@
         
         <div class="chat-messages" id="chat-messages">
             <div class="welcome-message">
-                <h2>Welcome to Lumos AI</h2>
+                <h2>Welcome to the Lumos AI</h2>
                 <p>I'm your AI assistant, ready to help with information, creative tasks, and more. Just type your message below to get started!</p>
                 <div class="welcome-features">
-                  
+                    <div class="feature-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                        </svg>
+                        Ask questions
+                    </div>
+                    <div class="feature-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Share images
+                    </div>
+                    <div class="feature-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                        Code highlighting
+                    </div>
                 </div>
             </div>
         </div>
@@ -627,209 +737,300 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const chatMessages = document.getElementById('chat-messages');
-            const chatInput = document.getElementById('chat-input');
-            const sendButton = document.getElementById('send-button');
-            const uploadButton = document.getElementById('upload-button');
-            const fileInput = document.getElementById('file-input');
-            const filePreview = document.getElementById('file-preview');
-            const typingIndicator = document.getElementById('typing-indicator');
-            const themeToggle = document.getElementById('theme-toggle');
-            const moonIcon = document.querySelector('.moon-icon');
-            const sunIcon = document.querySelector('.sun-icon');
-            
-            // Backend form elements
-            const backendForm = document.getElementById('backend-form');
-            const backendMessage = document.getElementById('backend-message');
-            const backendImage = document.getElementById('backend-image');
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // DOM Elements
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+    const uploadButton = document.getElementById('upload-button');
+    const fileInput = document.getElementById('file-input');
+    const filePreview = document.getElementById('file-preview');
+    const typingIndicator = document.getElementById('typing-indicator');
+    const themeToggle = document.getElementById('theme-toggle');
+    const moonIcon = document.querySelector('.moon-icon');
+    const sunIcon = document.querySelector('.sun-icon');
 
-            // State
-            let selectedFile = null;
-            let isDarkMode = localStorage.getItem('darkMode') === 'true';
+    // Backend form elements
+    const backendForm = document.getElementById('backend-form');
+    const backendMessage = document.getElementById('backend-message');
+    const backendImage = document.getElementById('backend-image');
 
-            // Initialize theme
-            if (isDarkMode) {
-                document.body.classList.add('dark-theme');
-                moonIcon.classList.add('hidden');
-                sunIcon.classList.remove('hidden');
+    // State
+    let selectedFile = null;
+    let isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+    // Initialize theme
+    if (isDarkMode) {
+        document.body.classList.add('dark-theme');
+        moonIcon.classList.add('hidden');
+        sunIcon.classList.remove('hidden');
+    }
+
+    // Theme toggle
+    themeToggle.addEventListener('click', function () {
+        isDarkMode = !isDarkMode;
+        document.body.classList.toggle('dark-theme');
+        moonIcon.classList.toggle('hidden');
+        sunIcon.classList.toggle('hidden');
+        localStorage.setItem('darkMode', isDarkMode);
+    });
+
+    // Auto-resize textarea and enable/disable send button
+    chatInput.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        sendButton.disabled = !chatInput.value.trim() && !selectedFile;
+    });
+
+    // Upload file button click
+    uploadButton.addEventListener('click', () => fileInput.click());
+
+    // Handle file selection
+    fileInput.addEventListener('change', function (e) {
+        if (e.target.files.length > 0) {
+            selectedFile = e.target.files[0];
+            displayFilePreview(selectedFile);
+            sendButton.disabled = false;
+        }
+    });
+
+    // Handle Enter key press
+    chatInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (!sendButton.disabled) {
+                sendMessage();
             }
+        }
+    });
 
-            // Theme toggle
-            themeToggle.addEventListener('click', function() {
-                isDarkMode = !isDarkMode;
-                document.body.classList.toggle('dark-theme');
-                moonIcon.classList.toggle('hidden');
-                sunIcon.classList.toggle('hidden');
-                localStorage.setItem('darkMode', isDarkMode);
-            });
+    // Send button click
+    sendButton.addEventListener('click', sendMessage);
 
-            // Auto-resize textarea
-            chatInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                const newHeight = Math.min(this.scrollHeight, 150);
-                this.style.height = newHeight + 'px';
-                
-                // Enable/disable send button based on input
-                sendButton.disabled = !chatInput.value.trim() && !selectedFile;
-            });
+    // Display file preview
+    function displayFilePreview(file) {
+        if (!file) {
+            filePreview.classList.add('hidden');
+            filePreview.innerHTML = '';
+            return;
+        }
 
-            // Handle file upload button click
-            uploadButton.addEventListener('click', function() {
-                fileInput.click();
-            });
+        const fileElement = document.createElement('div');
+        fileElement.className = 'file-badge';
+        fileElement.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span class="file-name">${file.name}</span>
+            <button class="remove-file" aria-label="Remove file">×</button>
+        `;
 
-            // Handle file selection
-            fileInput.addEventListener('change', function(e) {
-                if (e.target.files.length > 0) {
-                    selectedFile = e.target.files[0];
-                    displayFilePreview(selectedFile);
-                    sendButton.disabled = false;
-                }
-            });
+        filePreview.innerHTML = '';
+        filePreview.appendChild(fileElement);
+        filePreview.classList.remove('hidden');
 
-            // Handle Enter key press
-            chatInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (!sendButton.disabled) {
-                        sendMessage();
-                    }
-                }
-            });
+        const removeButton = fileElement.querySelector('.remove-file');
+        removeButton.addEventListener('click', function () {
+            selectedFile = null;
+            fileInput.value = '';
+            filePreview.classList.add('hidden');
+            sendButton.disabled = !chatInput.value.trim();
+        });
+    }
 
-            // Handle send button click
-            sendButton.addEventListener('click', sendMessage);
+    // Create code block element
+    function createCodeBlock(language, content) {
+        const container = document.createElement('div');
+        container.className = 'code-block-container';
 
-            // Display file preview
-            function displayFilePreview(file) {
-                if (!file) {
-                    filePreview.classList.add('hidden');
-                    filePreview.innerHTML = '';
-                    return;
-                }
+        const header = document.createElement('div');
+        header.className = 'code-block-header';
 
-                const fileElement = document.createElement('div');
-                fileElement.className = 'file-badge';
-                fileElement.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        const langSpan = document.createElement('span');
+        langSpan.className = 'code-block-language';
+        langSpan.textContent = language;
+
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-button';
+        copyButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            Copy
+        `;
+
+        copyButton.addEventListener('click', function () {
+            navigator.clipboard.writeText(content).then(() => {
+                copyButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 13l4 4L19 7" />
                     </svg>
-                    <span class="file-name">${file.name}</span>
-                    <button class="remove-file" aria-label="Remove file">×</button>
+                    Copied!
                 `;
+                setTimeout(() => {
+                    copyButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Copy
+                    `;
+                }, 2000);
+            });
+        });
 
-                filePreview.innerHTML = '';
-                filePreview.appendChild(fileElement);
-                filePreview.classList.remove('hidden');
+        header.appendChild(langSpan);
+        header.appendChild(copyButton);
 
-                // Handle remove file button
-                const removeButton = fileElement.querySelector('.remove-file');
-                removeButton.addEventListener('click', function() {
-                    selectedFile = null;
-                    fileInput.value = '';
-                    filePreview.classList.add('hidden');
-                    sendButton.disabled = !chatInput.value.trim();
-                });
+        const codeBlock = document.createElement('div');
+        codeBlock.className = 'code-block';
+        const codeElement = document.createElement('code');
+        codeElement.className = language;
+        codeElement.innerText = content;
+        codeBlock.appendChild(codeElement);
+
+        container.appendChild(header);
+        container.appendChild(codeBlock);
+        return container;
+    }
+
+    // Process text for code block fragments
+    function processMessageText(text) {
+      // Remove Markdown-style headers and emphasis
+      text = text
+          .replace(/^###\s?/gm, '')       // remove lines starting with ###
+          .replace(/\*\*\*/g, '')         // remove ***
+          .replace(/\*\*/g, '');          // remove **
+  
+      const codeBlockRegex = /```([a-zA-Z0-9]+)\n([\s\S]*?)```/g;
+      let match;
+      let lastIndex = 0;
+      const fragments = [];
+  
+      while ((match = codeBlockRegex.exec(text)) !== null) {
+          if (match.index > lastIndex) {
+              fragments.push({
+                  type: 'text',
+                  content: text.substring(lastIndex, match.index)
+              });
+          }
+          fragments.push({
+              type: 'code',
+              language: match[1],
+              content: match[2].trim()
+          });
+          lastIndex = match.index + match[0].length;
+      }
+  
+      if (lastIndex < text.length) {
+          fragments.push({
+              type: 'text',
+              content: text.substring(lastIndex)
+          });
+      }
+  
+      return fragments.length > 0 ? fragments : [{ type: 'text', content: text }];
+  }
+  
+    // Send message
+    async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message && !selectedFile) return;
+
+        addMessageToChat(message, 'user', selectedFile);
+
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        typingIndicator.classList.remove('hidden');
+        scrollToBottom();
+
+        try {
+            const formData = new FormData();
+            if (message) formData.append('message', message);
+            if (selectedFile) formData.append('image', selectedFile);
+
+            backendMessage.value = message;
+            if (selectedFile) {
+                const dt = new DataTransfer();
+                dt.items.add(selectedFile);
+                backendImage.files = dt.files;
             }
 
-            // Send message function
-            async function sendMessage() {
-                const message = chatInput.value.trim();
-                
-                if (!message && !selectedFile) return;
+            const response = await fetch('/chat', {
+                method: 'POST',
+                body: formData
+            });
 
-                // Add user message to chat
-                addMessageToChat(message, 'user', selectedFile);
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const result = await response.json();
 
-                // Clear input and file preview
-                chatInput.value = '';
-                chatInput.style.height = 'auto';
-                
-                // Show typing indicator
-                typingIndicator.classList.remove('hidden');
-                scrollToBottom();
+            typingIndicator.classList.add('hidden');
+            addMessageToChat(result.reply, 'bot');
+        } catch (error) {
+            console.error("Error:", error);
+            typingIndicator.classList.add('hidden');
+            addMessageToChat("Sorry, there was an error processing your request. Please try again.", 'bot');
+        } finally {
+            selectedFile = null;
+            fileInput.value = '';
+            filePreview.classList.add('hidden');
+            sendButton.disabled = true;
+        }
+    }
 
-                try {
-                    // Prepare form data for backend
-                    const formData = new FormData();
-                    if (message) formData.append('message', message);
-                    if (selectedFile) formData.append('image', selectedFile);
+    // Add message to chat UI
+    function addMessageToChat(message, sender, file = null) {
+        const messageElement = document.createElement('div');
+        messageElement.className = `message ${sender}-message`;
 
-                    // Send to backend using fetch API
-                    const response = await fetch('/chat', {
-                        method: 'POST',
-                        body: formData
-                    });
+        const bubble = document.createElement('div');
+        bubble.className = 'message-bubble';
 
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    
-                    // Hide typing indicator
-                    typingIndicator.classList.add('hidden');
-                    
-                    // Add bot response to chat
-                    addMessageToChat(result.reply, 'bot');
-                } catch (error) {
-                    console.error("Error:", error);
-                    
-                    // Hide typing indicator
-                    typingIndicator.classList.add('hidden');
-                    
-                    // Show error message
-                    addMessageToChat("Sorry, there was an error processing your request. Please try again.", 'bot');
-                } finally {
-                    // Reset file input
-                    selectedFile = null;
-                    fileInput.value = '';
-                    filePreview.classList.add('hidden');
-                    sendButton.disabled = true;
-                }
-            }
-
-            // Add message to chat
-            function addMessageToChat(message, sender, file = null) {
-                const messageElement = document.createElement('div');
-                messageElement.className = `message ${sender}-message`;
-
-                const bubbleElement = document.createElement('div');
-                bubbleElement.className = 'message-bubble';
-
-                if (message) {
-                    const contentElement = document.createElement('div');
-                    contentElement.className = 'message-content';
-                    contentElement.textContent = message;
-                    bubbleElement.appendChild(contentElement);
-                }
-
-                if (file && sender === 'user') {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imageElement = document.createElement('img');
-                        imageElement.src = e.target.result;
-                        imageElement.className = 'message-image';
-                        imageElement.alt = 'Uploaded image';
-                        bubbleElement.appendChild(imageElement);
-                        scrollToBottom();
-                    };
-                    reader.readAsDataURL(file);
-                }
-
-                messageElement.appendChild(bubbleElement);
-                chatMessages.appendChild(messageElement);
-                scrollToBottom();
-            }
-
-            // Scroll to bottom of chat
-            function scrollToBottom() {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+        const fragments = processMessageText(message);
+        fragments.forEach(fragment => {
+            if (fragment.type === 'text') {
+                const content = document.createElement('div');
+                content.className = 'message-content';
+                content.textContent = fragment.content;
+                bubble.appendChild(content);
+            } else if (fragment.type === 'code') {
+                bubble.appendChild(createCodeBlock(fragment.language, fragment.content));
             }
         });
-    </script>
+
+        if (file && sender === 'user') {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'message-image';
+                img.alt = 'Uploaded image';
+                bubble.appendChild(img);
+                scrollToBottom();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        messageElement.appendChild(bubble);
+        chatMessages.appendChild(messageElement);
+
+        setTimeout(() => {
+            hljs.highlightAll();
+            scrollToBottom();
+        }, 0);
+    }
+
+    // Scroll chat to bottom
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+});
+
+</script>
 </body>
 </html>
