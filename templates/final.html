@@ -45,7 +45,8 @@
             --copy-button-bg: rgba(0, 0, 0, 0.05);
             --copy-button-color: #4b5563;
             --copy-button-hover: rgba(0, 0, 0, 0.1);
-            
+            --vh: 1vh;
+
         }
 
         .dark-theme {
@@ -86,6 +87,8 @@
             --copy-button-bg: rgba(255, 255, 255, 0.1);
             --copy-button-color: #abb2bf;
             --copy-button-hover: rgba(255, 255, 255, 0.2);
+            --vh: 1vh;
+
         }
 
         * {
@@ -98,6 +101,8 @@
         html, body {
             height: 100%;
             width: 100%;
+            height: calc(var(--vh, 1vh) * 100);
+
         }
 
         body {
@@ -122,6 +127,8 @@
             overflow: hidden;
             transition: all 0.3s ease;
             position: relative;
+            height: calc(var(--vh, 1vh) * 100); /* Replaces 100vh */
+
         }
 
         .chat-header {
@@ -739,6 +746,16 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
 <script>
+
+    function setViewportHeight() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      }
+      window.addEventListener('resize', setViewportHeight);
+      window.addEventListener('orientationchange', setViewportHeight);
+      setViewportHeight();
+
+
   document.addEventListener('DOMContentLoaded', function () {
     // DOM Elements
     const chatMessages = document.getElementById('chat-messages');
