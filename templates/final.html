@@ -670,14 +670,12 @@
             }
         }
         @media (max-width: 360px) {
-            body {
-                padding: 0.5rem;
-            }
+         
         
             .chat-container {
                 width: 100%;
                 height: 66vh;
-                border-radius: 1rem;
+                border-radius: 0px;
                 box-shadow: var(--card-shadow);
             }
         
@@ -697,7 +695,7 @@
             }
         
             .chat-title h1 {
-                font-size: 1.25rem;
+                font-size: 1rem;
                 margin-bottom: 0.25rem;
             }
         
@@ -749,10 +747,6 @@
                 font-size: 0.875rem;
             }
         
-            .send-button {
-                font-size: 0.875rem;
-                padding: 0.5rem 1rem;
-            }
         
             .theme-toggle {
                 width: 2rem;
@@ -781,6 +775,24 @@
         
             .remove-file {
                 padding: 0.125rem;
+            }
+          
+            .control-button svg{
+                width: 1.25rem;
+                height: 1.25rem;
+            }
+            .send-button {
+                width: 2.3rem;
+                height: 2.3rem;
+                padding: 0.1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .send-button svg {
+                width: 1.5rem;
+                height: 1.5rem;
             }
         }
         
